@@ -11,29 +11,39 @@
 <body>
     <div class="container">
         <div class="row">
-            <div>
-                <label for="fileUpload" class="btn btn-success">Choose File</label>
-                <input type="file" id="fileUpload" onchange="loadImage(this)" hidden/>
-                <div>
-                    <button class="btn btn-danger" onclick="clipImage()">Clip Image</button>
+            <div class="col-md-12">
+                <h3 class="text-center">Simple image clipper example</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <div class="btn-group" role="group" aria-label="...">
+                    <label for="fileUpload" class="btn btn-success">Choose File</label>
+                    <input type="file" id="fileUpload" onchange="loadImage(this)" hidden/>
+                    <label class="btn btn-danger" onclick="clipImage()">Clip Image</label>
                 </div>
             </div>
-          <div class="col-md-5 canvas-container">
+            <div class="col-md-4 col-sm-4">
+                <h3 class="text-right">Clipped Image</h3>
+            </div> 
+            <div class="col-md-4 col-sm-4" id="notification">
+
+            </div>            
+        </div>
+        <div class="row">
+          <div class="col-md-5 col-sm-5 canvas-container">
             <canvas id="canvas" height="500" width="500"></canvas> 
           </div>
-          <div class="col-md-6">
-            One of three columns
+          <div class="col-md-6 col-sm-5" id="clipped-image">
           </div>
           
         </div>
       </div>
-    <p>Clipped images by user</p>
-    
 </body>
 <script src="./path_cropper.js"></script> 
 </html>
 <style>
 .canvas-container canvas{
-    /* border: solid red 1px; */
+    border: solid #ff4 1px;
 }
 </style>

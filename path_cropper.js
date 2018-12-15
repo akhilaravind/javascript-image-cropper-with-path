@@ -14,7 +14,7 @@
     var offsetY=canvasOffset.top;
     var isDrwawing = false;
     // set some canvas styles
-    ctx.strokeStyle='black';
+    ctx.strokeStyle='Red';
     // an array to hold user's click-points that define the clipping area
     var points=[];
     var lastIndex = {mx:0, my:0}
@@ -38,7 +38,7 @@
       ch=canvas.height=(img.height > 500) ? 450 : img.height;
 
       // draw the image at 25% opacity
-      drawImage(0.2); 
+      drawImage(1); 
 
       // listen for mousedown and button clicks
       
@@ -51,7 +51,7 @@
       
       });
       // $('#canvas').mousemove(function(e){handleMouseDown(e);});
-      $('#reset').click(function(){ points.length=0; drawImage(0.25); });
+      $('#reset').click(function(){ points.length=0; drawImage(1); });
     }
 
     // Trigger if the mouse down function is activated.
@@ -83,22 +83,33 @@
       // show the user an outline of their current clipping path
         outlineIt();
       }
-
-      // if the user clicked back in the original circle
-      // then complete the clip
-    
     }
 
     clipImage = function (){
-      
+      var el= document.getElementById('notification')
+      var html = document.createElement('div');
+      html.setAttribute('class', 'alert alert-warning');
+      if(!points.length){
+        html.innerHTML = `<strong>Warning!</strong> No image or no path to clip`;
+        el.appendChild(html);
+        var timer = setTimeout(function(){
+          el.removeChild(html);
+          clearTimeout(timer)
+        }, 2000) 
+        return false;
+     }
       if(points.length>1){
         var dx = lastIndex.mx-points[0].x;
         var dy = lastIndex.my-points[0].y;
         if(dx*dx+dy*dy<10*10){
           clipIt();
         }else{
-          console.log('points not joined');
-          
+          html.innerHTML = `<strong>Warning!</strong> Points needs to be closed`;
+          el.appendChild(html);
+          var timer = setTimeout(function(){
+            el.removeChild(html);
+            clearTimeout(timer)
+          }, 2000) 
         }
       }
     }
@@ -114,7 +125,7 @@
 
     // show the current potential clipping path
     function outlineIt(){
-      drawImage(0.25);
+      drawImage(1);
       ctx.beginPath();
       ctx.moveTo(points[0].x,points[0].y);
       for(var i=0;i<points.length;i++){
@@ -123,9 +134,10 @@
       // ctx.closePath();
       ctx.stroke();
       ctx.beginPath();
-      // ctx.lineWidth = 5;
-
-      ctx.arc(points[0].x,points[0].y,10,0,Math.PI*2);
+      ctx.strokeStyle = "#FF0000";
+      ctx.lineWidth = 1.5;
+      ctx.lineCap = 'round';
+      ctx.arc(points[0].x,points[0].y,5,0,Math.PI*2);
       ctx.closePath();
       ctx.stroke();
     }
@@ -159,10 +171,9 @@
       }
       ctx.closePath();
       ctx.clip();
-      // get resized aspect ratio
+      // get resized aspect ratio and clip
       var ratio = getResized(img.width, img.height, 500, 500);
       ctx.drawImage(img,0,0, img.width, img.height, 0, 0, ratio.width, ratio.height);
-      // ctx.drawImage(img,0,0);
       ctx.restore();
 
       // create a new canvas 
@@ -180,7 +191,8 @@
       var clippedImage=new Image();
       clippedImage.onload=function(){
         // append the new image to the page
-        document.body.appendChild(clippedImage);
+        var el = document.getElementById('clipped-image');
+        el.appendChild(clippedImage);
       }
       clippedImage.src=c.toDataURL();
 
@@ -189,6 +201,6 @@
       points.length=0;
 
       // redraw the image on the main canvas for further clipping
-      drawImage(0.25);
+      drawImage(1);
     }
 })();
